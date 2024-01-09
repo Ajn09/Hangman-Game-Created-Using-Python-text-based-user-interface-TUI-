@@ -1,0 +1,168 @@
+
+from random import choice
+
+def select_word():
+    with open("words.txt", mode="r") as words:
+        word_list = words.readlines()
+    return choice(word_list).strip()
+
+    from random import choice: This line imports the choice function from the random module. choice is used later to randomly select a word from a list.
+
+    def select_word():: This line defines a function named select_word that is responsible for selecting a random word from a file named "words.txt."
+
+    with open("words.txt", mode="r") as words:: This line opens the "words.txt" file in read mode ("r") using a context manager (with statement). It ensures that the file is properly closed after reading its content. The file content is accessed through the words variable.
+
+    word_list = words.readlines(): This line reads all lines from the "words.txt" file and stores them in a list called word_list.
+
+    return choice(word_list).strip(): This line returns a randomly chosen word from the word_list. The strip() method is used to remove leading and trailing whitespaces from the selected word.
+
+python
+
+def get_player_input(guessed_letters):
+    while True:
+        player_input = input("Guess a letter: ").lower()
+        if _validate_input(player_input, guessed_letters):
+            return player_input
+
+    def get_player_input(guessed_letters):: This function is designed to get input from the player. It takes a set or list called guessed_letters as an argument, representing letters that the player has already guessed.
+
+    while True:: This initiates an infinite loop, prompting the player to guess a letter until a valid input is received.
+
+    player_input = input("Guess a letter: ").lower(): This line prompts the player to input a letter, converts the input to lowercase, and stores it in the player_input variable.
+
+    if _validate_input(player_input, guessed_letters):: This line checks if the input is valid by calling the _validate_input function with the player's input and the set of guessed letters.
+
+    return player_input: If the input is valid, the function returns the player's input, ending the loop.
+
+python
+
+import string
+
+def _validate_input(player_input, guessed_letters):
+    return (
+        len(player_input) == 1
+        and player_input in string.ascii_lowercase
+        and player_input not in guessed_letters
+    )
+
+    import string: This line imports the string module, which provides a collection of string constants, including ascii_lowercase.
+
+    def _validate_input(player_input, guessed_letters):: This function checks the validity of the player's input.
+
+    len(player_input) == 1: Checks if the input is a single character.
+
+    player_input in string.ascii_lowercase: Checks if the input is a lowercase letter.
+
+    player_input not in guessed_letters: Checks if the letter has not been guessed before.
+
+    return (...): Returns True if all conditions are met, indicating that the input is valid.
+
+python
+
+def join_guessed_letters(guessed_letters):
+    return " ".join(sorted(guessed_letters))
+
+    def join_guessed_letters(guessed_letters):: This function takes a set or list of guessed letters and returns a string where the letters are joined with spaces and sorted.
+
+python
+
+def build_guessed_word(target_word, guessed_letters):
+    if not guessed_letters:
+        # If no letters have been guessed, show only one randomly chosen letter
+        return random.choice([letter if letter.isalpha() else "_" for letter in target_word])
+
+    current_letters = []
+    for letter in target_word:
+        if letter in guessed_letters:
+            current_letters.append(letter)
+        else:
+            current_letters.append("_")
+    return " ".join(current_letters)
+
+
+    if not guessed_letters:: This checks whether there are no guessed letters. If this condition is true, it means that the player has not guessed any letters yet.
+
+    random.choice([letter if letter.isalpha() else "_" for letter in target_word]): In this case, it generates a list comprehension that goes through each character in the target_word. If the character is an alphabetical letter (letter.isalpha()), it includes that letter in the list; otherwise, it includes an underscore ("_"). Then, random.choice is used to pick one random element from this list.
+        If no letters have been guessed, this will randomly choose one letter from the target_word (if it's an alphabetical character) to display. If the character is not alphabetical (e.g., a space or punctuation), it will show an underscore.
+
+    current_letters: This is a list that will hold the characters to be displayed in the guessed word.
+
+    The for loop goes through each character in the target_word:
+
+        If the character has been guessed (letter in guessed_letters), it appends that letter to current_letters.
+
+        If the character has not been guessed, it appends an underscore to current_letters.
+
+    return " ".join(current_letters): This joins the characters in current_letters into a string with spaces in between. This is done to format the displayed word with spaces between each character or underscore.
+python
+
+def draw_hanged_man(wrong_guesses):
+    hanged_man = [
+        r"""
+  -----
+  |   |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+-------
+""",
+        # ... (similar blocks for different stages of the hangman)
+    ]
+
+    print(hanged_man[wrong_guesses])
+
+    def draw_hanged_man(wrong_guesses):: This function takes the number of wrong guesses and prints a representation of the hangman based on the current stage of the game.
+
+    hanged_man = [...]: This is a list of strings, where each string represents a different stage of the hangman drawing.
+
+    print(hanged_man[wrong_guesses]): Prints the hangman drawing corresponding to the number of wrong guesses.
+
+python
+
+MAX_INCORRECT_GUESSES = 6
+
+def game_over(wrong_guesses, target_word, guessed_letters):
+    if wrong_guesses == MAX_INCORRECT_GUESSES:
+        return True
+    if set(target_word) <= guessed_letters:
+        return True
+    return False
+
+    MAX_INCORRECT_GUESSES = 6: Sets the maximum number of incorrect guesses allowed in the game.
+
+    def game_over(wrong_guesses, target_word, guessed_letters):: This function determines whether the game is over based on the number of wrong guesses, the target word, and the guessed letters.
+
+    if wrong_guesses == MAX_INCORRECT_GUESSES:: Checks if the number of wrong guesses is equal to the maximum allowed. If true, the game is over.
+
+    if set(target_word) <= guessed_letters:: Checks if all letters in the target word have been guessed. If true, the game is over.
+
+    return False: Returns False if neither of the above conditions is met.
+
+python
+
+if __name__ == "__main__":
+    # Initial setup
+    target_word = select_word()
+    guessed_letters = set()
+    guessed_word = build_guessed_word(target_word, guessed_letters)
+    wrong_guesses = 0
+    print("Welcome to Hangman!")
+
+    if __name__ == "__main__":: This block checks if the script is being run directly (not imported as a module).
+
+    target_word = select_word(): Calls the select_word function to get a random target word.
+
+    guessed_letters = set(): Initializes an empty set to store guessed letters.
+
+    guessed_word = build_guessed_word(target_word, guessed_letters): Calls the build_guessed_word function to initialize the guessed word.
+
+    wrong_guesses = 0: Initializes the number of wrong guesses to 0.
+
+    print("Welcome to Hangman!"): Prints a welcome message to the console.
+
+The subsequent code handles the game loop, where the player makes guesses until the game is over, and then it prints the outcome of the game. The game loop includes printing the hangman, displaying the current state of the guessed word, and processing player input. The game ends when the player either successfully guesses the word or reaches the maximum allowed incorrect guesses.
